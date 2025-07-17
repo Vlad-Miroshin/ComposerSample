@@ -1,4 +1,6 @@
 FROM php:7.4-fpm
+
+COPY php.ini /usr/local/etc/php/conf.d/custom.ini
  
 # ставим необходимые для нормальной работы модули
 RUN apt-get update && apt-get install -y \
