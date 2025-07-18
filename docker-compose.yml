@@ -36,6 +36,7 @@ services:
   # строим на базе стандартного образа
   db:
     image: mysql  # мы не используем кастомный Dockerfile, поэтому сразу указываем образ
+    restart: always
     container_name: db
     ports:
       - "3306:3306"  #порт по умолчанию
@@ -46,6 +47,22 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # значение из .env
     volumes:
       - ./dbdata:/var/lib/mysql  # /var/lib/mysql путь к БД MySQL по-умолчанию
+      - ./mysql/config:/etc/mysql/conf.d  # путь к кастомному конфигу
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      APACHE_PORT: 8181
+      MYSQL_DATABASE: ${MYSQL_DATABASE} # значение из .env
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # значение из .env
+    ports:
+      - "8181:8181"      
     networks:
       - app-network
  
